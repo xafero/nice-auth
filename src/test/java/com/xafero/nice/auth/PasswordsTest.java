@@ -1,10 +1,13 @@
 package com.xafero.nice.auth;
 
 import com.xafero.nice.auth.api.Algorithm;
+import com.xafero.nice.auth.api.IPasswordChecker;
+import com.xafero.nice.auth.api.IPasswordChecker.CheckResult;
 import com.xafero.nice.auth.api.IPasswordHash;
 import com.xafero.nice.auth.api.ISecureHasher;
 import com.xafero.nice.auth.impl.PBKDF2Hasher;
 import com.xafero.nice.auth.impl.PasswordHash;
+import com.xafero.nice.auth.util.Passwords;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -66,5 +69,19 @@ public class PasswordsTest {
         assertEquals(24, pass.getHash().length());
         assertTrue(hash.verifyPassword("foobar", pass));
         assertFalse(hash.verifyPassword("fosbal", pass));
+    }
+
+    @Test
+    public void testPasswordComplexity() {
+        IPasswordChecker compl = Passwords.LightCheck;
+        assertEquals(CheckResult.TooShort, compl.checkPassword("h"));
+        assertEquals(CheckResult.OK, compl.checkPassword("abcdtest"));
+        compl = Passwords.SpecialCheck;
+        assertEquals(CheckResult.TooShort, compl.checkPassword("h"));
+        assertEquals(CheckResult.DontSpace, compl.checkPassword("abc test def"));
+        assertEquals(CheckResult.FewLetters, compl.checkPassword("a###????1234"));
+        assertEquals(CheckResult.FewDigits, compl.checkPassword("abcdtestdefg"));
+        assertEquals(CheckResult.FewSymbols, compl.checkPassword("abcdtest1234"));
+        assertEquals(CheckResult.OK, compl.checkPassword("a$cd1234d#fg"));
     }
 }
