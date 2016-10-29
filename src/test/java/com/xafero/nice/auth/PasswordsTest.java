@@ -83,5 +83,11 @@ public class PasswordsTest {
         assertEquals(CheckResult.FewDigits, compl.checkPassword("abcdtestdefg"));
         assertEquals(CheckResult.FewSymbols, compl.checkPassword("abcdtest1234"));
         assertEquals(CheckResult.OK, compl.checkPassword("a$cd1234d#fg"));
+        compl = Passwords.MediumCheck;
+        assertEquals(CheckResult.TooShort, compl.checkPassword("h"));
+        assertEquals(CheckResult.FewLetters, compl.checkPassword("12345678"));
+        assertEquals(CheckResult.FewDigits, compl.checkPassword("abcdefgh"));
+        assertEquals(CheckResult.DontSpace, compl.checkPassword("abcd 234"));
+        assertEquals(CheckResult.OK, compl.checkPassword("abcd1234"));
     }
 }

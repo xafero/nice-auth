@@ -15,6 +15,40 @@ public class Passwords {
         }
     };
 
+    public static final IPasswordChecker MediumCheck = new IPasswordChecker() {
+        @Override
+        public CheckResult checkPassword(String password) {
+            if (password.trim().length() < 8) {
+                return CheckResult.TooShort;
+            }
+            int letters = 0;
+            int digits = 0;
+            int spaces = 0;
+            int symbols = 0;
+            for (char sign : password.toCharArray()) {
+                if (Character.isLetter(sign)) {
+                    letters++;
+                } else if (Character.isDigit(sign)) {
+                    digits++;
+                } else if (Character.isWhitespace(sign)) {
+                    spaces++;
+                } else {
+                    symbols++;
+                }
+            }
+            if (letters < 1) {
+                return CheckResult.FewLetters;
+            }
+            if (digits < 1) {
+                return CheckResult.FewDigits;
+            }
+            if (spaces > 0) {
+                return CheckResult.DontSpace;
+            }
+            return CheckResult.OK;
+        }
+    };
+
     public static final IPasswordChecker SpecialCheck = new IPasswordChecker() {
         @Override
         public CheckResult checkPassword(String password) {
